@@ -25,8 +25,8 @@ def create(request):
             'Notes': request.POST.get('notes')
         }
 
-        AT.insert(data)
-
+        response = AT.insert(data)
+        messages.success(request, 'New movie added: {}'.format(response['fields'].get('Name')))
     return redirect('/')
 
 def edit(request, movie_id):
@@ -38,10 +38,12 @@ def edit(request, movie_id):
             'Notes': request.POST.get('notes')
         }
 
-        AT.update(movie_id, data)
-
+        response = AT.update(movie_id, data)
+        messages.success(request, 'Updated movie: {}'.format(response['fields'].get('Name')))
     return redirect('/')
 
 def delete(request, movie_id):
-    AT.delete(movie_id)
+    movie_name = AT.get(movie_id)['fields'].get('Name')
+    response = AT.delete(movie_id)
+    messages.warning(request, 'Movie Deleted: {}'.format(movie_name))
     return redirect('/')
